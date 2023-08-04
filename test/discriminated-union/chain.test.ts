@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { chain } from './chain';
+import { chain } from '../../src/discriminated-union/chain';
 
 type Escape = { status: 'error'; error: string };
 type Continue = { status: 'success'; message: string };
@@ -42,7 +42,7 @@ describe('chain', () => {
                 .link(secondFunc)
                 .run();
 
-            expect(secondFunc).toHaveBeenCalledWith(firstCallResponse);
+            expect(secondFunc).toHaveBeenCalledWith(firstCallResponse, [firstCallResponse]);
             expect(result).toBe(expected);
         });
     });
