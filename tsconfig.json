@@ -13,8 +13,8 @@
     "strictNullChecks": true
   },
   "include": [
-    "src/**/*",
-    "index.ts"
+    "index.ts",
+    "./src/**/*"
   ],
   "exclude": [
     "node_modules",
