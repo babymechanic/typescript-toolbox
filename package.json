@@ -1,4 +1,29 @@
 {
   "name": "typescript-toolbox",
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.6.1",
+  "version": "0.0.7",
+  "description": "Tools to leverage typescript features in code easily",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babymechanic/typescript-toolbox.git"
+  },
+  "homepage": "https://github.com/babymechanic/typescript-toolbox#readme",
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "typescript",
+    "nothrow",
+    "tooblox",
+    "utilities"
+  ],
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "vitest": "^0.34.1"
+  },
+  "scripts": {
+    "build": "tsc"
+  }
 }
