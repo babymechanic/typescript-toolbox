@@ -59,19 +59,64 @@ describe('chain', () => {
                     status: 'output1',
                     message1: ['message1']
                 }))
-                .link(async (input: Output1): Promise<Escape | Output2> => ({
+                .link(async (input): Promise<Escape | Output2> => ({
                     status: 'output2',
                     message2: [...input.message1, 'message2']
                 }))
-                .link(async (input: Output2): Promise<Escape | Output3> => ({
-                    status: 'output3',
-                    message3: [...input.message2, 'message3']
-                }));
+                .link(async (input): Promise<Escape | Output3> => {
+                    return ({
+                        status: 'output3',
+                        message3: [...input.message2, 'message3']
+                    });
+                });
 
             const result = (await completeChain.run()) as Output3;
 
             expect(result.status).toBe('output3');
             expect(result.message3).toEqual(['message1', 'message2', 'message3']);
+        });
+
+        it('should allow access to all the previous results in the chain', async () => {
+            const allPreviousOutputs: any[][] = [];
+            const completeChain = chainSeed
+                .link(async (): Promise<Escape | Output1> => {
+                    return ({
+                        status: 'output1',
+                        message1: ['message1']
+                    });
+                })
+                .link(async (input, previousOutputs): Promise<Escape | Output2> => {
+                    allPreviousOutputs.push(previousOutputs)
+                    return ({
+                        status: 'output2',
+                        message2: [...input.message1, 'message2']
+                    });
+                })
+                .link(async (input, previousOutputs): Promise<Escape | Output3> => {
+                    allPreviousOutputs.push(previousOutputs);
+                    return ({
+                        status: 'output3',
+                        message3: [...input.message2, 'message3']
+                    });
+                });
+
+            await completeChain.run();
+
+            expect(allPreviousOutputs).toHaveLength(2);
+            expect(allPreviousOutputs[0]).toEqual([{
+                status: 'output1',
+                message1: ['message1']
+            }]);
+            expect(allPreviousOutputs[1]).toEqual([
+                {
+                    status: 'output1',
+                    message1: ['message1']
+                },
+                {
+                    status: 'output2',
+                    message2: ['message1', 'message2']
+                }
+            ]);
         });
     })
 
