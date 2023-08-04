@@ -1,23 +1,23 @@
 import { ExtractLast } from '../type-manipulation';
 
-type DUnion<TDiscriminator extends string> = { [K: string]: unknown } & { [K in TDiscriminator]: unknown; };
+type DUnion<TDiscriminatorProp extends string> = { [K: string]: unknown } & { [K in TDiscriminatorProp]: unknown; };
 
-type Callable<TOutputAcc extends any[], TDiscriminator extends string> = TOutputAcc['length'] extends 0
-    ? () => Promise<DUnion<TDiscriminator>>
-    : (input: ExtractLast<TOutputAcc>, previousOutputs: TOutputAcc) => Promise<DUnion<TDiscriminator>>;
+type Callable<TOutputAcc extends any[], TDiscriminatorProp extends string> = TOutputAcc['length'] extends 0
+    ? () => Promise<DUnion<TDiscriminatorProp>>
+    : (input: ExtractLast<TOutputAcc>, previousOutputs: TOutputAcc) => Promise<DUnion<TDiscriminatorProp>>;
 
 const createChainRunner = <
-    TDiscriminator extends string,
-    TEscapeType extends DUnion<TDiscriminator>,
+    TDiscriminatorProp extends string,
+    TEscapeType extends DUnion<TDiscriminatorProp>,
     TOutputAcc extends any[],
 >(
     discriminatorProp: string,
-    isEscape: (val: DUnion<TDiscriminator>) => val is TEscapeType,
+    isEscape: (val: DUnion<TDiscriminatorProp>) => val is TEscapeType,
     callChain: ReadonlyArray<(...args: any[]) => any>) => {
     return {
-        link<T extends Callable<TOutputAcc, TDiscriminator>>(callable: T) {
+        link<T extends Callable<TOutputAcc, TDiscriminatorProp>>(callable: T) {
             return createChainRunner<
-                TDiscriminator,
+                TDiscriminatorProp,
                 TEscapeType,
                 [...TOutputAcc, Exclude<Awaited<ReturnType<T>>, TEscapeType>]
             >(discriminatorProp, isEscape, [...callChain, callable])
