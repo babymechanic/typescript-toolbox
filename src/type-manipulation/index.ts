@@ -14,6 +14,7 @@ export type PartialExcept<T extends { [TKey: string]: unknown }, TRequired exten
 export type DeepRequired<T> = T extends object ? { [K in keyof T]-?: DeepRequired<T[K]> } : NonNullable<T>;
 
 export type ExtractLast<T extends any[]> = T extends [...any, infer TLast] ? TLast : never;
+
 export type ExtractTill<
     TArr extends any[],
     TCount extends number,
