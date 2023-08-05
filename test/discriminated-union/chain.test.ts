@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { chain } from '../../src/discriminated-union/chain';
+import { Equal, Expect } from '../test-utils/type-assertions';
 
 type Escape = { status: 'error'; error: string };
 type Continue = { status: 'success'; message: string };
@@ -86,6 +87,8 @@ describe('chain', () => {
                     });
                 })
                 .link(async (input, previousOutputs): Promise<Escape | Output2> => {
+                    type Check1 = Expect<Equal<typeof input, Output1>>;
+                    type Check2 = Expect<Equal<typeof previousOutputs, [Output1]>>;
                     allPreviousOutputs.push(previousOutputs)
                     return ({
                         status: 'output2',
@@ -93,6 +96,8 @@ describe('chain', () => {
                     });
                 })
                 .link(async (input, previousOutputs): Promise<Escape | Output3> => {
+                    type Check1 = Expect<Equal<typeof input, Output2>>;
+                    type Check2 = Expect<Equal<typeof previousOutputs, [Output1, Output2]>>;
                     allPreviousOutputs.push(previousOutputs);
                     return ({
                         status: 'output3',
