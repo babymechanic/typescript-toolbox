@@ -24,6 +24,7 @@
     "vitest": "^0.34.1"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest"
   }
 }
