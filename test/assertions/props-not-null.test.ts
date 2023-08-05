@@ -28,8 +28,10 @@ describe('propsAreNotNull', () => {
 
         if (propsAreNotNull(input, ['prop1'])) {
 
-            type Check1 = Expect<Equal<typeof input.prop1, string>>;
-            type Check2 = Expect<Equal<typeof input.prop2, string | undefined>>;
+            type Cases = [
+                Expect<Equal<typeof input.prop1, string>>,
+                Expect<Equal<typeof input.prop2, string | undefined>>
+            ];
         }
     });
 });

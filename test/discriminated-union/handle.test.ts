@@ -12,15 +12,15 @@ describe('createHandler', () => {
 
     const handle = createHandler<'status', Result, string>('status', {
         error: (val) => {
-            type Check = Expect<Equal<typeof val, ErrorResult>>;
+            type Cases = [Expect<Equal<typeof val, ErrorResult>>];
             return `Hello ${ val.errorMessage }`;
         },
         success: (val) => {
-            type Check = Expect<Equal<typeof val, SuccessResult>>;
+            type Cases = [Expect<Equal<typeof val, SuccessResult>>];
             return `Hello ${ val.message }`;
         },
         warning: (val) => {
-            type Check = Expect<Equal<typeof val, WarningResult>>;
+            type Cases = [Expect<Equal<typeof val, WarningResult>>];
             return `Hello ${ val.warnMessage }`;
         },
     });

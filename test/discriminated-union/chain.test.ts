@@ -87,8 +87,6 @@ describe('chain', () => {
                     });
                 })
                 .link(async (input, previousOutputs): Promise<Escape | Output2> => {
-                    type Check1 = Expect<Equal<typeof input, Output1>>;
-                    type Check2 = Expect<Equal<typeof previousOutputs, [Output1]>>;
                     allPreviousOutputs.push(previousOutputs)
                     return ({
                         status: 'output2',
@@ -96,8 +94,6 @@ describe('chain', () => {
                     });
                 })
                 .link(async (input, previousOutputs): Promise<Escape | Output3> => {
-                    type Check1 = Expect<Equal<typeof input, Output2>>;
-                    type Check2 = Expect<Equal<typeof previousOutputs, [Output1, Output2]>>;
                     allPreviousOutputs.push(previousOutputs);
                     return ({
                         status: 'output3',
@@ -122,6 +118,29 @@ describe('chain', () => {
                     message2: ['message1', 'message2']
                 }
             ]);
+        });
+
+        it('should have the correct typing', async () => {
+            const completeChain = chainSeed
+                .link(async (): Promise<Escape | Output1> => ({ status: 'output1', message1: [] }))
+                .link(async (input, previousOutputs): Promise<Escape | Output2> => {
+                    type Cases = [
+                        Expect<Equal<typeof input, Output1>>,
+                        Expect<Equal<typeof previousOutputs, [Output1]>>
+                    ];
+                    return ({ status: 'output2', message2: [] });
+                })
+                .link(async (input, previousOutputs): Promise<Escape | Output3> => {
+                    type Cases = [
+                        Expect<Equal<typeof input, Output2>>,
+                        Expect<Equal<typeof previousOutputs, [Output1, Output2]>>
+                    ];
+                    return ({ status: 'output3', message3: [] });
+                });
+
+            const result = await completeChain.run();
+
+            type Cases = [Expect<Equal<typeof result, Output3 | Escape>>]
         });
     })
 
