@@ -3,8 +3,8 @@ import { propsAreNotNull } from '../../src/assertions/props-not-null';
 import { Equal, Expect } from '../test-utils/type-assertions';
 
 type TestInput = {
-    prop1: string | undefined;
-    prop2: string | undefined;
+    prop1?: string | undefined;
+    prop2?: string | undefined;
 }
 
 describe('propsAreNotNull', () => {

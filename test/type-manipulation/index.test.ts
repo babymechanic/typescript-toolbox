@@ -1,4 +1,4 @@
-import { ExtractByProp, PartialExcept } from '../../src/type-manipulation';
+import { DeepRequired, ExtractByProp, PartialExcept } from '../../src/type-manipulation';
 import { Equal, Expect } from '../test-utils/type-assertions';
 import { describe } from 'vitest';
 
@@ -23,7 +23,12 @@ describe('PartialExcept', () => {
     ]
 });
 
-
+describe('DeepRequired', () => {
+    type Cases = [Expect<Equal<
+        DeepRequired<{ grandParent?: { parent?: { child?: string } } }>,
+        { grandParent: { parent: { child: string } } }
+    >>]
+});
 
 
 
