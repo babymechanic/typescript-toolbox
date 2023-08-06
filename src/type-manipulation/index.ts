@@ -1,7 +1,7 @@
 export type ExtractByProp<
     TProp extends string,
     TVal extends string,
-    TObj extends { [K in TProp]: any }
+    TObj extends { [K in TProp]: string }
 > = TObj extends { [K in TProp]: TVal } ? TObj : never;
 
 type Merge<T extends { [TKey: string]: unknown }, U extends { [TKey: string]: unknown }> = {

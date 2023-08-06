@@ -50,5 +50,3 @@ export const chain = <
     >(discriminatorProp, isEscape, [])
 }
 
-
-type A = [number, string];

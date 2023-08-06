@@ -1,25 +1,33 @@
 import { ExtractByProp } from '../type-manipulation';
 
-
 type Event = {
-    name: string;
+    readonly name: string;
 }
 
-export const eventEmitter = <TEvent extends Event>() => {
+export type EventEmitter<TEvent extends Event, TEventName extends string = TEvent['name']> = {
+    on<T extends TEventName>(name: T, callable: (payload: ExtractByProp<'name', T, TEvent>) => Promise<void>): () => void;
+    emit<T extends TEvent>(payload: T): Promise<void>;
+}
+
+export const createEventEmitter = <TEvent extends Event, TEventName extends string = TEvent['name']>(): EventEmitter<TEvent, TEventName> => {
 
     const subscribers: Partial<{
-        [K in TEvent['name']]: ((payload: ExtractByProp<'name', K, TEvent>) => Promise<void>)[]
+        [K in TEventName]: ((payload: ExtractByProp<'name', K, TEvent>) => Promise<void>)[]
     }> = {};
 
     return {
-        on<TEventName extends TEvent['name']>(name: TEventName, callable: (payload: ExtractByProp<'name', TEventName, TEvent>) => Promise<void>): () => void {
+        on<T extends TEventName>(name: T, callable: (payload: ExtractByProp<'name', T, TEvent>) => Promise<void>): () => void {
             subscribers[name] = (subscribers[name] || []).concat(callable);
             return () => {
                 subscribers[name] = (subscribers[name] || []).filter(x => x !== callable);
             }
         },
-        async emit<TEventName extends TEvent['name']>(name: TEventName, payload: ExtractByProp<'name', TEventName, TEvent>): Promise<void> {
-            await Promise.all((subscribers[name] || []).map(x => x(payload)))
+        async emit<const T extends TEvent>(payload: T): Promise<void> {
+            const eventName = payload.name as TEventName;
+            type Payload<TEvent extends Event> = ExtractByProp<'name', typeof eventName, TEvent>;
+            Promise
+                .all((subscribers[eventName] || []).map(x => x(payload as Payload<TEvent>)))
+                .then();
         }
     }
 }
