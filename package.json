@@ -13,6 +13,25 @@
   "files": [
     "dist/**/*"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./assestions": "./dist/assestions/index.js",
+    "./discriminated-union": "./dist/discriminated-union/index.js",
+    "./type-manipulation": "./dist/type-manipulation/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "assestions": [
+        "dist/assestions/index.d.ts"
+      ],
+      "discriminated-union": [
+        "dist/discriminated-union/index.d.ts"
+      ],
+      "type-manipulation": [
+        "dist/type-manipulation/index.d.ts"
+      ]
+    }
+  },
   "keywords": [
     "typescript",
     "nothrow",

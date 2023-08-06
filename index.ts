@@ -1,2 +1,3 @@
-export { chain } from './src/discriminated-union/chain';
-export { createHandler } from './src/discriminated-union/handle';
+export * as discriminatedUnion from './src/discriminated-union';
+export * as assertions from './src/assertions';
+export * as typeManipulation from './src/type-manipulation';
