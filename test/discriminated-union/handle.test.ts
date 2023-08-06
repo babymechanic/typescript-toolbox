@@ -13,39 +13,39 @@ describe('createHandler', () => {
     const handle = createHandler<'status', Result, string>('status', {
         error: (val) => {
             type Cases = [Expect<Equal<typeof val, ErrorResult>>];
-            return `Hello ${ val.errorMessage }`;
+            return `The error is: ${ val.errorMessage }`;
         },
         success: (val) => {
             type Cases = [Expect<Equal<typeof val, SuccessResult>>];
-            return `Hello ${ val.message }`;
+            return `The success message is: ${ val.message }`;
         },
         warning: (val) => {
             type Cases = [Expect<Equal<typeof val, WarningResult>>];
-            return `Hello ${ val.warnMessage }`;
+            return `The warning is: ${ val.warnMessage }`;
         },
     });
 
     it('handles error', () => {
-        const error: ErrorResult = { status: 'error', errorMessage: 'this is an error' };
+        const error: ErrorResult = { status: 'error', errorMessage: 'test' };
 
         const result = handle(error);
 
-        expect(result).toBe('Hello this is an error');
+        expect(result).toBe('The error is: test');
     });
 
     it('handles success', () => {
-        const success: SuccessResult = { status: 'success', message: 'this is a success' };
+        const success: SuccessResult = { status: 'success', message: 'test' };
 
         const result = handle(success);
 
-        expect(result).toBe('Hello this is a success');
+        expect(result).toBe('The success message is: test');
     });
 
     it('handles warning', () => {
-        const warning: WarningResult = { status: 'warning', warnMessage: 'this is a warning' };
+        const warning: WarningResult = { status: 'warning', warnMessage: 'test' };
 
         const result = handle(warning);
 
-        expect(result).toBe('Hello this is a warning');
+        expect(result).toBe('The warning is: test');
     });
 });
