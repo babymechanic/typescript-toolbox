@@ -4,7 +4,7 @@ on:
     paths:
       - './**'
     branches:
-      - master
+      - release
 
 defaults:
   run:
@@ -30,3 +30,7 @@ jobs:
           yarn
           yarn test --run
           yarn build
+      - name: publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PERSONAL_NPM_TOKEN }}
