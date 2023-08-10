@@ -1,0 +1,33 @@
+name: build
+on:
+  push:
+    paths:
+      - '.github/workflows/build.yml'
+    branches:
+      - master
+      - release
+
+defaults:
+  run:
+    shell: bash
+    working-directory: '.'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: use node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install yarn
+        run: corepack enable && corepack prepare yarn@stable --activate
+      - name: run build
+        run: |
+          yarn
+          yarn test --run
+          yarn build
