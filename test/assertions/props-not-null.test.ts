@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { propsAreNotNull } from '../../src/assertions/props-not-null';
+import { propsAreNotNull } from '../../src/assertions';
 import { Equal, Expect } from '../test-utils/type-assertions';
 
 type TestInput = {

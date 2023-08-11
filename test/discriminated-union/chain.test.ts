@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
-import { chain } from '../../src/discriminated-union/chain';
+import { chain } from '../../src/discriminated-union';
 import { Equal, Expect } from '../test-utils/type-assertions';
 
 type Escape = { status: 'error'; error: string };
