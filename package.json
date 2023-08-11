@@ -1,7 +1,7 @@
 {
   "name": "typescript-toolbox",
   "packageManager": "yarn@3.6.1",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Tools to leverage typescript features in code easily",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
