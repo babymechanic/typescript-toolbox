@@ -14,7 +14,7 @@ import { discriminatedUnion, typeManipulation, assertions } from 'typescript-too
 
 const handler = discriminatedUnion.createHandler(...);
 type Test = typeManipulation.ExtractByProp<'prop', 'test', {prop: 'test'}>;
-const intNotNull = assertions.propsAreNotNull({}, []);
+const isNotNull = assertions.propsAreNotNull({}, []);
 
 // use this to import the specific module
 import type { ExtractByProp, ExtractLast, DeepRequired } from 'typescript-toolbox/type-manipulation';
