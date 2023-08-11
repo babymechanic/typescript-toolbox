@@ -1,3 +1,5 @@
+![publish](https://github.com/babymechanic/typescript-toolbox/actions/workflows/publish.yml/badge.svg?branch=release)
+
 # typescript-toolbox
 
 A collection of utils to make using typescript features easier.
