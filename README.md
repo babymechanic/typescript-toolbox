@@ -41,7 +41,7 @@ type Failure = { type: 'failure' };
 type AlsoFailure = ExtractByProp<'type', 'failure', Success | Failure>;
 ```
 
-#### ExtractByProp
+#### ExtractLast
 
 Extracts the type of the last element in an array type 
 
