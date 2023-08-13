@@ -88,7 +88,7 @@ Tools built around discriminated unions
 
 #### chain
 
-Use this when you are dealing with a sequence of calls which results in distributed unions.
+Use this when you are dealing with a sequence of calls which results in discriminated unions.
 Instead of you having to define a guard clause after each call you can define a one time type assert. 
 
 ```typescript
