@@ -6,6 +6,19 @@ type Callable<TOutputAcc extends any[], TDiscriminatorProp extends string> = TOu
     ? () => Promise<DUnion<TDiscriminatorProp>>
     : (input: ExtractLast<TOutputAcc>, previousOutputs: TOutputAcc) => Promise<DUnion<TDiscriminatorProp>>;
 
+type ChainRunner<
+    TDiscriminatorProp extends string,
+    TEscapeType extends DUnion<TDiscriminatorProp>,
+    TOutputAcc extends any[],
+> = {
+    link: <T extends Callable<TOutputAcc, TDiscriminatorProp>>(callable: T) => ChainRunner<
+        TDiscriminatorProp,
+        TEscapeType,
+        [...TOutputAcc, Exclude<Awaited<ReturnType<T>>, TEscapeType>]
+    >;
+    run: () => Promise<TEscapeType | ExtractLast<TOutputAcc>>;
+}
+
 const createChainRunner = <
     TDiscriminatorProp extends string,
     TEscapeType extends DUnion<TDiscriminatorProp>,
@@ -15,7 +28,11 @@ const createChainRunner = <
     isEscape: (val: DUnion<TDiscriminatorProp>) => val is TEscapeType,
     callChain: ReadonlyArray<(...args: any[]) => any>) => {
     return {
-        link<T extends Callable<TOutputAcc, TDiscriminatorProp>>(callable: T) {
+        link<T extends Callable<TOutputAcc, TDiscriminatorProp>>(callable: T): ChainRunner<
+            TDiscriminatorProp,
+            TEscapeType,
+            [...TOutputAcc, Exclude<Awaited<ReturnType<T>>, TEscapeType>]
+        > {
             return createChainRunner<
                 TDiscriminatorProp,
                 TEscapeType,
@@ -37,12 +54,11 @@ const createChainRunner = <
     }
 }
 
-
 export const chain = <
     TDiscriminator extends string,
     TEscapeType extends DUnion<TDiscriminator>,
 >(discriminatorProp: string,
-  isEscape: (val: DUnion<TDiscriminator>) => val is TEscapeType) => {
+  isEscape: (val: DUnion<TDiscriminator>) => val is TEscapeType): ChainRunner<TDiscriminator, TEscapeType, []> => {
     return createChainRunner<
         TDiscriminator,
         TEscapeType,
