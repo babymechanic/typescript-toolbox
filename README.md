@@ -148,7 +148,7 @@ const unsub2 = eventEmitter.on('event2', async (args) => {
 });
 
 // restrict to the defined types and type check based on discriminated type
-eventEmitter.emit({ name: 'event2', prop2: 128973912 });
+await eventEmitter.emit({ name: 'event2', prop2: 128973912 });
 ```
 
 #### createHandler
