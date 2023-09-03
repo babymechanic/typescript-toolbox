@@ -1,10 +1,11 @@
 {
   "name": "typescript-toolbox",
   "packageManager": "yarn@3.6.1",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Tools to leverage typescript features in code easily",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/babymechanic/typescript-toolbox.git"
