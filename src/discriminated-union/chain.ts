@@ -2,14 +2,14 @@ import { ExtractLast } from '../type-manipulation';
 
 type DUnion<TDiscriminatorProp extends string> = { [K: string]: unknown } & { [K in TDiscriminatorProp]: unknown; };
 
-type Callable<TOutputAcc extends any[], TDiscriminatorProp extends string> = TOutputAcc['length'] extends 0
+type Callable<TOutputAcc extends unknown[], TDiscriminatorProp extends string> = TOutputAcc['length'] extends 0
     ? () => Promise<DUnion<TDiscriminatorProp>>
     : (input: ExtractLast<TOutputAcc>, previousOutputs: TOutputAcc) => Promise<DUnion<TDiscriminatorProp>>;
 
 type ChainRunner<
     TDiscriminatorProp extends string,
     TEscapeType extends DUnion<TDiscriminatorProp>,
-    TOutputAcc extends any[],
+    TOutputAcc extends unknown[],
 > = {
     link: <T extends Callable<TOutputAcc, TDiscriminatorProp>>(callable: T) => ChainRunner<
         TDiscriminatorProp,
@@ -22,11 +22,12 @@ type ChainRunner<
 const createChainRunner = <
     TDiscriminatorProp extends string,
     TEscapeType extends DUnion<TDiscriminatorProp>,
-    TOutputAcc extends any[],
+    TOutputAcc extends unknown[],
 >(
     discriminatorProp: string,
     isEscape: (val: DUnion<TDiscriminatorProp>) => val is TEscapeType,
-    callChain: ReadonlyArray<(...args: any[]) => any>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callChain: ReadonlyArray<(...args: any[]) => Promise<unknown>>) => {
     return {
         link<T extends Callable<TOutputAcc, TDiscriminatorProp>>(callable: T): ChainRunner<
             TDiscriminatorProp,
@@ -40,16 +41,16 @@ const createChainRunner = <
             >(discriminatorProp, isEscape, [...callChain, callable])
         },
         async run(): Promise<TEscapeType | ExtractLast<TOutputAcc>> {
-            let acc: any = undefined;
-            const accAll: any[] = [];
+            let acc: unknown = undefined;
+            const accAll: unknown[] = [];
             for (let index = 0; index < callChain.length; index++) {
                 acc = await callChain[index](acc, [...accAll]);
-                if (isEscape(acc)) {
-                    return acc;
+                if (isEscape(acc as DUnion<TDiscriminatorProp>)) {
+                    return acc as TEscapeType;
                 }
                 accAll.push(acc);
             }
-            return acc;
+            return acc as ExtractLast<TOutputAcc>;
         }
     }
 }

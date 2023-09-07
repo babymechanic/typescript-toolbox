@@ -28,5 +28,6 @@ jobs:
       - name: run build
         run: |
           yarn
+          yarn lint
           yarn test --run
           yarn build

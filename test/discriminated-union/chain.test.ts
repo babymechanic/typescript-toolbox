@@ -73,7 +73,7 @@ describe('chain', () => {
         });
 
         it('should allow access to all the previous results in the chain', async () => {
-            const allPreviousOutputs: any[][] = [];
+            const allPreviousOutputs: unknown[][] = [];
             const func1 = async (): Promise<Escape | Output1> => ({ status: 'output1', message1: ['message1'] });
             const func2 = async (input: Output1, previousOutputs: [Output1]): Promise<Escape | Output2> => {
                 allPreviousOutputs.push(previousOutputs)
@@ -111,6 +111,7 @@ describe('chain', () => {
             const completeChain = chainSeed
                 .link(async (): Promise<Escape | Output1> => ({ status: 'output1', message1: [] }))
                 .link(async (input, previousOutputs): Promise<Escape | Output2> => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     type Cases = [
                         Expect<Equal<typeof input, Output1>>,
                         Expect<Equal<typeof previousOutputs, [Output1]>>
@@ -118,6 +119,7 @@ describe('chain', () => {
                     return ({ status: 'output2', message2: [] });
                 })
                 .link(async (input, previousOutputs): Promise<Escape | Output3> => {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     type Cases = [
                         Expect<Equal<typeof input, Output2>>,
                         Expect<Equal<typeof previousOutputs, [Output1, Output2]>>
@@ -127,6 +129,7 @@ describe('chain', () => {
 
             const result = await completeChain.run();
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             type Cases = [Expect<Equal<typeof result, Output3 | Escape>>]
         });
     })

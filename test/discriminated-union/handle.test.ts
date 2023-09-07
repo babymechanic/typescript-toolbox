@@ -12,14 +12,17 @@ describe('createHandler', () => {
 
     const handle = createHandler<'status', Result, string>('status', {
         error: (val) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             type Cases = [Expect<Equal<typeof val, ErrorResult>>];
             return `The error is: ${ val.errorMessage }`;
         },
         success: (val) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             type Cases = [Expect<Equal<typeof val, SuccessResult>>];
             return `The success message is: ${ val.message }`;
         },
         warning: (val) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             type Cases = [Expect<Equal<typeof val, WarningResult>>];
             return `The warning is: ${ val.warnMessage }`;
         },

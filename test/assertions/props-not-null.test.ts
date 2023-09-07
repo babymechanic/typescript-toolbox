@@ -28,6 +28,7 @@ describe('propsAreNotNull', () => {
 
         if (propsAreNotNull(input, ['prop1'])) {
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             type Cases = [
                 Expect<Equal<typeof input.prop1, string>>,
                 Expect<Equal<typeof input.prop2, string | undefined>>
