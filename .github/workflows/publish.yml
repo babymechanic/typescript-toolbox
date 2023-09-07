@@ -28,6 +28,7 @@ jobs:
         run: |
           yarn
           yarn lint
+          yarn build:tests
           yarn test --run
           yarn build
       - name: publish
