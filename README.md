@@ -82,6 +82,18 @@ type AllRequired = DeepRequired<{ grandParent?: { parent?: { child?: string | un
 
 ```
 
+#### typedKeys
+
+Get array of typed keys from an object
+
+```typescript
+import { typedKeys } from 'typescript-toolbox/type-manipulation';
+
+const keys = typedKeys({ prop1: 'test', prop2: 'test' });
+
+// type is ('prop1' | 'prop2')[]
+```
+
 ### typescript-toolbox/discriminated-union
 
 Tools built around discriminated unions
