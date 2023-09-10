@@ -13,13 +13,13 @@ Your can import everything or only modules that you need. e.g.
 import { discriminatedUnion, typeManipulation, assertions } from 'typescript-toolbox';
 
 const handler = discriminatedUnion.createHandler(...);
-type Test = typeManipulation.ExtractByProp<'prop', 'test', {prop: 'test'}>;
+type Test = typeManipulation.ExtractByProp<'prop', 'test', { prop: 'test' }>;
 const isNotNull = assertions.propsAreNotNull({}, []);
 
 // use this to import the specific module
 import type { ExtractByProp, ExtractLast, DeepRequired } from 'typescript-toolbox/type-manipulation';
-import type { propsAreNotNull } from 'typescript-toolbox/assertions';
-import type { createHandler, createEventEmitter, chain } from 'typescript-toolbox/discriminated-union';
+import { propsAreNotNull } from 'typescript-toolbox/assertions';
+import { createHandler, createEventEmitter, chain } from 'typescript-toolbox/discriminated-union';
 ```
 
 ## Available utilities
