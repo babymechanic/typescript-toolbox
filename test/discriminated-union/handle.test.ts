@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createHandler } from '../../src/discriminated-union/handle';
+import { createHandler } from '../../src/discriminated-union';
 import { Equal, Expect } from '../test-utils/type-assertions';
 
 type SuccessResult = { status: 'success'; message: string; };
