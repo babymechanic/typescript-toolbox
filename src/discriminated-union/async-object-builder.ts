@@ -43,8 +43,7 @@ const asyncObjectBuilder = <TBuildConfiguration extends BuildConfig = Record<str
                 ...buildConfig,
                 [prop]: func
             } as UpdateConfig;
-            const newBuildOrder = [...propBuildOrder, prop] as (keyof UpdateConfig)[];
-            return asyncObjectBuilder(updatedConfig, newBuildOrder)
+            return asyncObjectBuilder(updatedConfig, [...propBuildOrder, prop] as (keyof UpdateConfig)[])
         },
 
         build: async (): Promise<AggregateResult> => {
