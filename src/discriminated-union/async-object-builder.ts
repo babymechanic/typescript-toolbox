@@ -12,15 +12,15 @@ type Success<T> = {
 };
 
 export type CreateResult<TOutPut> = Success<TOutPut> | Failure;
-export type BuilderFunc<TInput, TOutPut> = (buildDeps: TInput) => Promise<CreateResult<TOutPut>>;
-type BuilderConfig<TInput, TOutput> = {
-    builder: BuilderFunc<TInput, TOutput>;
+export type BuilderFunc<TInput, TSeed, TOutPut> = (buildDeps: TInput, seed: TSeed) => Promise<CreateResult<TOutPut>>;
+type BuilderConfig<TInput, TSeed, TOutput> = {
+    builder: BuilderFunc<TInput, TSeed, TOutput>;
     dispose?: (output: TOutput) => void;
 };
 
 type ExtractObject<T> = {
     [K in keyof T]:
-    T[K] extends BuilderConfig<unknown, infer TOutput> ? TOutput : never;
+    T[K] extends BuilderConfig<unknown, unknown, infer TOutput> ? TOutput : never;
 }
 
 type AggregateFailure<TKey extends PropertyKey> = Failure & {
@@ -28,7 +28,7 @@ type AggregateFailure<TKey extends PropertyKey> = Failure & {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BuildConfig = { [K in PropertyKey]: BuilderConfig<any, any> }
+type BuildConfig = { [K in PropertyKey]: BuilderConfig<any, any, any> }
 
 const safeDispose = (disposers: (() => void)[]): unknown[] => {
     return disposers.reverse().reduce<unknown[]>((acc, disposer) => {
@@ -47,7 +47,8 @@ export type ObjectBuilderOptions = {
 }
 
 const _asyncObjectBuilder = <
-    TBuildConfiguration extends BuildConfig = Record<string, never>
+    TSeed,
+    TBuildConfiguration extends BuildConfig
 >(
     buildConfig: TBuildConfiguration,
     propBuildOrder: (keyof TBuildConfiguration)[],
@@ -61,7 +62,7 @@ const _asyncObjectBuilder = <
     return {
         with: <
             TProp extends PropertyKey,
-            TBuilderConfig extends BuilderConfig<Omit<SuccessfullyBuiltObject, TProp>, unknown>
+            TBuilderConfig extends BuilderConfig<SuccessfullyBuiltObject, TSeed, unknown>
         >(prop: TProp, config: TBuilderConfig) => {
             if (propBuildOrder.includes(prop)) {
                 throw new InvalidConfigurationError(`'${ prop.toString() }' prop was defined twice`)
@@ -71,16 +72,17 @@ const _asyncObjectBuilder = <
                 ...buildConfig,
                 [prop]: config
             } as UpdatedConfig;
-            return _asyncObjectBuilder(updatedConfig, [...propBuildOrder, prop] as (keyof UpdatedConfig)[], options)
+            const updatedBuildOrder = [...propBuildOrder, prop] as (keyof UpdatedConfig)[];
+            return _asyncObjectBuilder<TSeed, UpdatedConfig>(updatedConfig, updatedBuildOrder, options)
         },
 
-        build: async (): Promise<AggregateResult> => {
+        build: async (seed: TSeed): Promise<AggregateResult> => {
             const acc: Partial<SuccessfullyBuiltObject> = {};
             const disposers: (() => void)[] = [];
             for (const prop of propBuildOrder) {
                 const { builder, dispose } = buildConfig[prop];
                 try {
-                    const result = await builder(acc);
+                    const result = await builder(acc, seed);
                     if (result.type === 'success') {
                         acc[prop] = result.value as SuccessfullyBuiltObject[typeof prop];
                         if (dispose != null) {
@@ -108,5 +110,5 @@ const _asyncObjectBuilder = <
     }
 };
 
-export const asyncObjectBuilder = (options: ObjectBuilderOptions = { dispose: safeDispose }) =>
-    _asyncObjectBuilder({}, [], options);
+export const asyncObjectBuilder = <TSeed = undefined>(options: ObjectBuilderOptions = { dispose: safeDispose }) =>
+    _asyncObjectBuilder<TSeed, BuildConfig>({}, [], options);
