@@ -20,7 +20,8 @@ type BuilderConfig<TInput, TSeed, TOutput> = {
 
 type ExtractObject<T> = {
     [K in keyof T]:
-    T[K] extends BuilderConfig<unknown, unknown, infer TOutput> ? TOutput : never;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    T[K] extends BuilderConfig<any, any, infer TOutput> ? TOutput : never;
 }
 
 type AggregateFailure<TKey extends PropertyKey> = Failure & {
@@ -111,4 +112,4 @@ const _asyncObjectBuilder = <
 };
 
 export const asyncObjectBuilder = <TSeed = undefined>(options: ObjectBuilderOptions = { dispose: safeDispose }) =>
-    _asyncObjectBuilder<TSeed, BuildConfig>({}, [], options);
+    _asyncObjectBuilder<TSeed, Record<string, never>>({}, [], options);

@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { asyncObjectBuilder } from '../../src/discriminated-union/async-object-builder';
 import { InvalidConfigurationError } from '../../src/errors/invalid-configuration-error';
 import { ExtractByProp } from '../../src/type-manipulation';
+import { Equal, Expect } from '../test-utils/type-assertions';
+
 
 describe("createAsyncObjectBuilder", () => {
 
@@ -14,6 +16,10 @@ describe("createAsyncObjectBuilder", () => {
 
             const obj = await config.build(undefined)
 
+            if (obj.type === "success") {
+                obj.value.str
+            }
+
             expect(obj).toEqual({
                 type: 'success',
                 value: {
@@ -22,6 +28,11 @@ describe("createAsyncObjectBuilder", () => {
                 },
                 dispose: expect.any(Function)
             });
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            type AssertTypesAreCorrect = Expect<Equal<ExtractByProp<'type', 'success', typeof obj>['value'], {
+                num: number,
+                str: string
+            }>>
         });
 
         it('should be able to pass the previously built value to the next builder', async () => {
