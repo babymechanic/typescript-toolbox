@@ -14,11 +14,7 @@ describe("createAsyncObjectBuilder", () => {
                 .with('num', { builder: async () => ({ type: 'success', value: 123123 }) })
                 .with('str', { builder: async () => ({ type: 'success', value: 'hello world' }) });
 
-            const obj = await config.build(undefined)
-
-            if (obj.type === "success") {
-                obj.value.str
-            }
+            const obj = await config.build({})
 
             expect(obj).toEqual({
                 type: 'success',
@@ -40,7 +36,7 @@ describe("createAsyncObjectBuilder", () => {
                 .with('num', { builder: async () => ({ type: 'success', value: 123123 }) })
                 .with('str', { builder: async ({ num }) => ({ type: 'success', value: num.toString() }) });
 
-            const obj = await config.build(undefined)
+            const obj = await config.build({})
 
             expect(obj).toEqual({
                 type: 'success',
@@ -63,7 +59,7 @@ describe("createAsyncObjectBuilder", () => {
                 .with('str', {
                     builder: async () => ({ type: 'success', value: 'hello world' }),
                     dispose: dispose2
-                }).build(undefined);
+                }).build({});
             const successResult = result as ExtractByProp<'type', 'success', typeof result>;
 
             successResult.dispose();
@@ -98,7 +94,7 @@ describe("createAsyncObjectBuilder", () => {
                 .with('num', { builder: async () => ({ type: 'failure', details: 'first error' }) })
                 .with('str', { builder: async () => ({ type: 'success', value: 'this should not be called' }) });
 
-            const obj = await config.build(undefined)
+            const obj = await config.build({})
 
             expect(obj).toEqual({
                 type: 'failure',
@@ -112,7 +108,7 @@ describe("createAsyncObjectBuilder", () => {
                 .with('num', { builder: async () => ({ type: 'success', value: 123123 }) })
                 .with('str', { builder: async () => ({ type: 'failure', details: 'second error' }) });
 
-            const obj = await config.build(undefined)
+            const obj = await config.build({})
 
             expect(obj).toEqual({
                 type: 'failure',
@@ -127,7 +123,7 @@ describe("createAsyncObjectBuilder", () => {
                 .with('num', { builder: async () => ({ type: 'failure', details: 'first error' }) })
                 .with('str', { builder: mock });
 
-            await config.build(undefined)
+            await config.build({})
 
             expect(mock).not.toHaveBeenCalled();
         });
@@ -154,7 +150,7 @@ describe("createAsyncObjectBuilder", () => {
                     dispose: vi.fn().mockImplementation(() => {
                         throw secondError;
                     })
-                }).build(undefined);
+                }).build({});
             const successResult = result as ExtractByProp<'type', 'success', typeof result>;
 
             const disposed = successResult.dispose();
@@ -174,7 +170,7 @@ describe("createAsyncObjectBuilder", () => {
                     builder: () => Promise.reject(secondError),
                 });
 
-            const result = await config.build(undefined);
+            const result = await config.build({});
 
             expect(result).toEqual({
                 type: 'failure',
@@ -195,7 +191,7 @@ describe("createAsyncObjectBuilder", () => {
                     builder: async () => ({ type: 'failure', details: 'could not build' }),
                 });
 
-            const result = await config.build(undefined);
+            const result = await config.build({});
 
             expect(result).toEqual({
                 type: 'failure',

@@ -1,6 +1,7 @@
 import { Equal, Expect } from '../test-utils/type-assertions';
 import { describe, it } from 'vitest';
 import {
+    AddProp,
     AwaitedReturn,
     DeepRequired,
     ExtractByProp,
@@ -61,10 +62,10 @@ describe('AwaitedReturn', () => {
     it('gives never if not a function', () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         type Cases = [
-          Expect<Equal<AwaitedReturn<string>, never>>,
-          Expect<Equal<AwaitedReturn<Record<string, unknown>>, never>>,
-          Expect<Equal<AwaitedReturn<undefined>, never>>,
-          Expect<Equal<AwaitedReturn<number>, never>>
+            Expect<Equal<AwaitedReturn<string>, never>>,
+            Expect<Equal<AwaitedReturn<Record<string, unknown>>, never>>,
+            Expect<Equal<AwaitedReturn<undefined>, never>>,
+            Expect<Equal<AwaitedReturn<number>, never>>
         ];
     });
 
@@ -83,6 +84,18 @@ describe('AwaitedReturn', () => {
             Expect<Equal<AwaitedReturn<() => string>, string>>,
             Expect<Equal<AwaitedReturn<() => number>, number>>,
             Expect<Equal<AwaitedReturn<() => Record<string, unknown>>, Record<string, unknown>>>,
+        ];
+    });
+});
+
+describe('AddProp', () => {
+    it('should add the prop to the type', () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+        type Cases = [
+            Expect<Equal<AddProp<Record<PropertyKey, never>, 'prop', string>, { prop: string }>>,
+            Expect<Equal<AddProp<undefined, 'prop', string>, { prop: string }>>,
+            Expect<Equal<AddProp<null, 'prop', string>, { prop: string }>>,
+            Expect<Equal<AddProp<{ test: 'prop' }, 'prop', string>, { prop: string, test: 'prop' }>>,
         ];
     });
 });

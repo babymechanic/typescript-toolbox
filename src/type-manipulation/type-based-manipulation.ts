@@ -22,10 +22,15 @@ export type ExtractLast<T extends unknown[]> = T extends [...unknown[], infer TL
 
 export type AwaitedReturn<T> = T extends (...args: unknown[]) => unknown ? Awaited<ReturnType<T>> : never;
 
-export type AddProp<TObj, TProp extends PropertyKey, TVal> = TObj extends { [K in PropertyKey]: never }
-    ? { [K in TProp]: TVal }
-    : TObj extends UnknownObject
-        ? { [K in keyof TObj | TProp]: K extends TProp ? TVal : TObj[K]; }
-        : never;
+export type AddProp<TObj, TProp extends PropertyKey, TVal> =
+    TObj extends null
+        ? { [K in TProp]: TVal }
+        : TObj extends undefined
+            ? { [K in TProp]: TVal }
+            : TObj extends { [K in PropertyKey]: never }
+                ? { [K in TProp]: TVal }
+                : TObj extends UnknownObject
+                    ? { [K in TProp | keyof TObj]: K extends TProp ? TVal : TObj[K]; }
+                    : never;
 
 

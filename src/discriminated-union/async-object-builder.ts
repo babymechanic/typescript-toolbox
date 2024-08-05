@@ -111,5 +111,5 @@ const _asyncObjectBuilder = <
     }
 };
 
-export const asyncObjectBuilder = <TSeed = undefined>(options: ObjectBuilderOptions = { dispose: safeDispose }) =>
+export const asyncObjectBuilder = <TSeed = Record<string, never>>(options: ObjectBuilderOptions = { dispose: safeDispose }) =>
     _asyncObjectBuilder<TSeed, Record<string, never>>({}, [], options);
